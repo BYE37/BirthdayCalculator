@@ -15,6 +15,7 @@ class MainActivity : AppCompatActivity() {
     // Make it private (not accessible outside of class)
     private var tvSelectedDate: TextView? = null
     private var tvAgeInMinutes: TextView? = null
+    private var tvNextBirthday: TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +25,7 @@ class MainActivity : AppCompatActivity() {
         val btnDatePicker: Button = findViewById(R.id.btnDatePicker)
         tvSelectedDate = findViewById(R.id.tvSelectedDate)
         tvAgeInMinutes = findViewById(R.id.tvAgeInMinutes)
+        tvNextBirthday = findViewById(R.id.tvNextBirthday)
         // Set a click listener for the button
         btnDatePicker.setOnClickListener {
             clickDatePicker()
@@ -46,6 +48,7 @@ class MainActivity : AppCompatActivity() {
                 // pass in the context, text, and length
 
                 val selectedDate = "${month + 1}/$dayOfMonth/$year"
+                val nextBirthday = "${month + 1}/$dayOfMonth/${myCalendar.get(Calendar.YEAR) + 1}"
 
                 // question mark is safe call operator (if null)
                 tvSelectedDate?.setText(selectedDate)
@@ -55,8 +58,11 @@ class MainActivity : AppCompatActivity() {
 
                 // Create a date object
                 val theDate = sdf.parse(selectedDate)
+                val nextBirthdayDate = sdf.parse(nextBirthday)
 
+                // Calculate in minutes the date from 1970f
                 val selectedDateInMinutes = theDate.time / 60000
+                val nextBirthdayInMinutes = nextBirthdayDate.time / 60000
 
                 // if date is not empty, we execute it
                 theDate?.let {
@@ -65,7 +71,11 @@ class MainActivity : AppCompatActivity() {
                     currentDate?.let {
                         val currentDateInMinutes = currentDate.time / 60000
                         val differenceInMinutes = currentDateInMinutes - selectedDateInMinutes
+                        val minutesUntilNextBirthday = nextBirthdayInMinutes - currentDateInMinutes
+
                         tvAgeInMinutes?.setText(differenceInMinutes.toString())
+                        tvNextBirthday?.setText(minutesUntilNextBirthday.toString())
+
                     }
                 }
 
